@@ -1,0 +1,98 @@
+
+/*
+Desafio7, ejercicio3 
+
+El objetivo es crear una clase CollectionCustom<T>
+-La clase tiene un atributo T[] “un array de T” en el cual se deben guardar los tipos una vez creada la implementación.
+- debe tener los métodos
+size():int
+addFirst(T): void
+addLast(T):void
+add(T):void
+remove(T): T remueve el primer elemento indicado y lo retorna.
+removeAll(T): void remueve todos los elementos.
+boolean empty(): indica si la colección está vacía.
+Crear la clase Main para probar cada método.
+Nota:No usar Collection (Set, List, Collection etc) vistas en clase, deben trabajar con array de T, uds deben implementar la lógica.
+ 
+  */
+
+import java.util.Arrays;
+
+public class CollectionCustom<T> {
+    private T[] array;
+    private int size;
+    private static final int INITIAL_CAPACITY = 10;
+
+    @SuppressWarnings("unchecked")
+    public CollectionCustom() {
+        array = (T[]) new Object[INITIAL_CAPACITY];
+        size = 0;
+    }
+
+    public int size() {
+        return size;
+    }
+
+    public void addFirst(T element) {
+        ensureCapacity();
+        shiftRight();
+        array[0] = element;
+        size++;
+    }
+
+    public void addLast(T element) {
+        ensureCapacity();
+        array[size] = element;
+        size++;
+    }
+
+    public void add(T element) {
+        addLast(element);
+    }
+
+    public T remove(T element) {
+        for (int i = 0; i < size; i++) {
+            if (array[i].equals(element)) {
+                T removedElement = array[i];
+                shiftLeft(i);
+                size--;
+                return removedElement;
+            }
+        }
+        return null;
+    }
+
+    public void removeAll(T element) {
+        int newIndex = 0;
+        for (int i = 0; i < size; i++) {
+            if (!array[i].equals(element)) {
+                array[newIndex++] = array[i];
+            }
+        }
+        size = newIndex;
+    }
+
+    public boolean empty() {
+        return size == 0;
+    }
+
+    private void ensureCapacity() {
+        if (size == array.length) {
+            int newCapacity = array.length * 2;
+            array = Arrays.copyOf(array, newCapacity);
+        }
+    }
+
+    private void shiftRight() {
+        if (size > 0) {
+            System.arraycopy(array, 0, array, 1, size);
+        }
+    }
+
+    private void shiftLeft(int index) {
+        if (size > 0) {
+            System.arraycopy(array, index + 1, array, index, size - index - 1);
+        }
+    }
+}
