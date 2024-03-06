@@ -1,0 +1,92 @@
+
+/*
+Desafio7, ejercicio2
+
+El objetivo es asimilar los conceptos de clases y objetos, interfaces y clases abstractas.
+Una torre de control tiene la responsabilidad de gestionar el aterrizaje de objetos que sobrevuelan el espacio aéreo.
+Para esto, dispone de un sistema que permite que los Voladores sean capaces de aterrizar en la pista 1.
+Pero solamente permite que ciertos Voladores puedan realizar esta acción, por este motivo
+la torre tiene un contrato que deben cumplir. Esto permite que no todo objeto aterrice.
+Aquellos que son voladores, pero NO cumplan con este contrato, debe pedir autorización
+adicional y dependerá de la confirmación de un operario, quien dirá SI o No.
+Si el operador acepta podrán aterrizar en la pista 2, de lo contrario se informará que no es posible aterrizar.
+Nota: Para esto desarrollar las clases e interfaces que considere necesario.
+-Cargar los objetos en una lista y recorrer cada elemento identificando quien pueden y quienes no descender.
+
+*/
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+// Interfaz para todos los objetos que pueden volar
+interface Volador {
+    void volar();
+}
+
+// Clase abstracta que implementa la interfaz Volador y define un método para verificar si pueden aterrizar
+abstract class VoladorAutorizable implements Volador {
+    // Método para verificar si puede aterrizar en la pista 1
+    public abstract boolean puedeAterrizar();
+}
+
+// Clase que representa al operario de la torre de control
+class OperarioTorreControl {
+    // Método para autorizar el aterrizaje en la pista 2
+    public boolean autorizarAterrizaje() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("¿Autorizar aterrizaje en la pista 2? (SI/NO)");
+        String respuesta = scanner.nextLine().toUpperCase();
+        scanner.close();
+        return respuesta.equals("SI");
+    }
+}
+
+// Clase que representa un objeto específico que puede volar y aterrizar si cumple con el contrato
+class Avion extends VoladorAutorizable {
+    @Override
+    public void volar() {
+        System.out.println("El avión está volando.");
+    }
+
+    @Override
+    public boolean puedeAterrizar() {
+        return true; // El avión siempre puede aterrizar en la pista 1
+    }
+}
+
+// Clase que representa un objeto específico que puede volar pero necesita autorización para aterrizar
+class GloboAireCaliente extends VoladorAutorizable {
+    @Override
+    public void volar() {
+        System.out.println("El globo de aire caliente está volando.");
+    }
+
+    @Override
+    public boolean puedeAterrizar() {
+        OperarioTorreControl operario = new OperarioTorreControl();
+        return operario.autorizarAterrizaje(); // El globo necesita autorización para aterrizar
+    }
+}
+
+public class TorreControl {
+    public static void main(String[] args) {
+        // Crear una lista de objetos voladores
+        List<Volador> objetosVoladores = new ArrayList<>();
+        objetosVoladores.add(new Avion());
+        objetosVoladores.add(new GloboAireCaliente());
+
+        // Recorrer la lista de objetos voladores y verificar quién puede aterrizar
+        for (Volador volador : objetosVoladores) {
+            volador.volar();
+            if (volador instanceof VoladorAutorizable) {
+                VoladorAutorizable voladorAutorizable = (VoladorAutorizable) volador;
+                if (voladorAutorizable.puedeAterrizar()) {
+                    System.out.println("Puede aterrizar en la pista 1.");
+                } else {
+                    System.out.println("No puede aterrizar en la pista 1.");
+                }
+            }
+        }
+    }
+}
