@@ -1,0 +1,117 @@
+
+/*
+Desafio1, ejercicio1
+El objetivo es repasar  ciclos, dobles con vectores, máximo, mínimo, promedio.
+-La escuela primaria xyz solicita el desarrollo de una aplicación para poder llevar el control de notas para cada alumno.
+-El programa solicitará el ingreso y la cantidad de alumnos a procesar.
+-Para cada alumno se deberá ingresar los siguientes datos:
+- nombre (string)
+- apellido (string)
+- número de examen
+- nota que obtuvo el alumno (numérico >=0 <=10)
+
+Al finalizar la carga de datos, se procederá a listar la siguiente información:
+
+1- alumno/s con la calificación más alta
+2- alumno/s con la calificación más baja
+3- alumnos que promocionan, aquellos que obtuvieron un promedio >= 7
+4- alumnos que deben recursar la materia, aquellos que obtuvieron un promedio < 7"
+
+*/
+
+import java.util.Scanner;
+
+class Alumno {
+    String nombre;
+    String apellido;
+    int numeroExamen;
+    double nota;
+
+    // Constructor
+    public Alumno(String nombre, String apellido, int numeroExamen, double nota) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.numeroExamen = numeroExamen;
+        this.nota = nota;
+    }
+}
+
+public class ControlNotas {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Ingrese la cantidad de alumnos:");
+        int cantidadAlumnos = scanner.nextInt();
+        scanner.nextLine(); // Limpia el buffer
+
+        Alumno[] alumnos = new Alumno[cantidadAlumnos];
+
+        // Ingreso de datos de cada alumno
+        for (int i = 0; i < cantidadAlumnos; i++) {
+            System.out.println("Ingrese el nombre del alumno " + (i + 1) + ":");
+            String nombre = scanner.nextLine();
+
+            System.out.println("Ingrese el apellido del alumno " + (i + 1) + ":");
+            String apellido = scanner.nextLine();
+
+            System.out.println("Ingrese el número de examen del alumno " + (i + 1) + ":");
+            int numeroExamen = scanner.nextInt();
+
+            System.out.println("Ingrese la nota del alumno " + (i + 1) + ":");
+            double nota = scanner.nextDouble();
+            scanner.nextLine(); // Limpia el buffer
+
+            alumnos[i] = new Alumno(nombre, apellido, numeroExamen, nota);
+        }
+
+        // Realizar cálculos y mostrar resultados
+        calcularResultados(alumnos);
+
+        scanner.close();
+    }
+
+    public static void calcularResultados(Alumno[] alumnos) {
+        double sumaNotas = 0;
+        double notaMaxima = Double.MIN_VALUE;
+        double notaMinima = Double.MAX_VALUE;
+        int contadorPromocion = 0;
+        int contadorRecursar = 0;
+
+        for (Alumno alumno : alumnos) {
+            sumaNotas += alumno.nota;
+
+            if (alumno.nota > notaMaxima) {
+                notaMaxima = alumno.nota;
+            }
+
+            if (alumno.nota < notaMinima) {
+                notaMinima = alumno.nota;
+            }
+
+            if (alumno.nota >= 7) {
+                contadorPromocion++;
+            } else {
+                contadorRecursar++;
+            }
+        }
+
+        double promedio = sumaNotas / alumnos.length;
+
+        System.out.println("Alumno/s con la calificación más alta:");
+        for (Alumno alumno : alumnos) {
+            if (alumno.nota == notaMaxima) {
+                System.out.println(alumno.nombre + " " + alumno.apellido);
+            }
+        }
+
+        System.out.println("Alumno/s con la calificación más baja:");
+        for (Alumno alumno : alumnos) {
+            if (alumno.nota == notaMinima) {
+                System.out.println(alumno.nombre + " " + alumno.apellido);
+            }
+        }
+
+        System.out.println("Alumnos que promocionan (promedio >= 7): " + contadorPromocion);
+        System.out.println("Alumnos que deben recursar (promedio < 7): " + contadorRecursar);
+    }
+}
